@@ -20,6 +20,9 @@ class MemberJpaRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    MemberQueryRepository memberQueryRepository;
+
     @Test
     public void basicCRUD() {
         Member member1 = new Member("member1");
@@ -82,5 +85,10 @@ class MemberJpaRepositoryTest {
         //지워서 비었으니 0이면 성공
         long deleteCount = memberRepository.count();
         assertThat(deleteCount).isEqualTo(0);
+    }
+
+    @Test
+    public void callCustom() {
+        List<Member> result = memberRepository.findMemberCustom();
     }
 }

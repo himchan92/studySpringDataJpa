@@ -5,7 +5,8 @@ import study.datajpa.entity.Member;
 
 import java.util.List;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+//커스텀 인터페이스 상속받아서 사용자정의 JPA 처리도 가능
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     //별도 작성없이 findBy필드명 규칙으로 JPA에서 제공
     //List<Member> findByUsername(String username);
