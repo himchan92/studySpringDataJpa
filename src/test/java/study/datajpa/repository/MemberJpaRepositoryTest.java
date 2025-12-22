@@ -6,89 +6,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.entity.Member;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-@Transactional
+@Transactional //JPA 모든변경은 한트랜젝션내에서 이뤄져야해서 필수셋팅
 class MemberJpaRepositoryTest {
 
     @Autowired
-    private MemberJpaRepository memberJpaRepository;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    MemberQueryRepository memberQueryRepository;
+    MemberJpaRepository memberJpaRepository;
 
     @Test
-    public void basicCRUD() {
-        Member member1 = new Member("member1");
-        Member member2 = new Member("member2");
+    public void testMember() {
+        Member member = new Member("memberA");
+        Member savedMember = memberJpaRepository.save(member);
 
-        memberJpaRepository.save(member1);
-        memberJpaRepository.save(member2);
+        Member findMember = memberJpaRepository.find(savedMember.getId());
 
-        Member findMember1 = memberJpaRepository.findById(member1.getId()).get();
-        Member findMember2 = memberJpaRepository.findById(member2.getId()).get();
-
-        assertThat(findMember1).isEqualTo(member1);
-        assertThat(findMember2).isEqualTo(member2);
-
-        List<Member> all = memberJpaRepository.findAll();
-        assertThat(all.size()).isEqualTo(2);
-
-        member1.setUsername("member1!!!!"); //변경감지 UPDATE 수행
-
-        //카운트 2건등록했으니 2맞으면 성공
-        long count = memberJpaRepository.count();
-        assertThat(count).isEqualTo(2);
-
-        //삭제검증
-        memberJpaRepository.delete(member1);
-        memberJpaRepository.delete(member2);
-
-        //지워서 비었으니 0이면 성공
-        long deleteCount = memberJpaRepository.count();
-        assertThat(deleteCount).isEqualTo(0);
-    }
-
-    @Test
-    public void basicCRUD2() {
-        Member member1 = new Member("member1");
-        Member member2 = new Member("member2");
-
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-
-        Member findMember1 = memberRepository.findById(member1.getId()).get();
-        Member findMember2 = memberRepository.findById(member2.getId()).get();
-
-        assertThat(findMember1).isEqualTo(member1);
-        assertThat(findMember2).isEqualTo(member2);
-
-        List<Member> all = memberRepository.findAll();
-        assertThat(all.size()).isEqualTo(2);
-
-        member1.setUsername("member1!!!!"); //변경감지 UPDATE 수행
-
-        //카운트 2건등록했으니 2맞으면 성공
-        long count = memberRepository.count();
-        assertThat(count).isEqualTo(2);
-
-        //삭제검증
-        memberRepository.delete(member1);
-        memberRepository.delete(member2);
-
-        //지워서 비었으니 0이면 성공
-        long deleteCount = memberRepository.count();
-        assertThat(deleteCount).isEqualTo(0);
-    }
-
-    @Test
-    public void callCustom() {
-        List<Member> result = memberRepository.findMemberCustom();
+        assertThat(findMember.getId()).isEqualTo(member.getId());
+        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+        assertThat(findMember).isEqualTo(member);
     }
 }
