@@ -17,4 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Query("select new study.datajpa.dto.MemberDto(m.id, m.username, t.name) " +
             "from Member m join m.team t")
     List<MemberDto> findMemberDto();
+
+    //Projections 기능으로 특정 필드만 조회하고싶을때 <>에 해당 필드만 명시한 인터페이스 설정(UsernameOnly)
+    List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
 }
